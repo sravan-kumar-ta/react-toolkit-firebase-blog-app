@@ -2,6 +2,8 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
@@ -42,7 +44,17 @@ export const blogApi = createApi({
         }
       },
     }),
+    deleteBlog: builder.mutation({
+      async queryFn(id) {
+        try {
+          await deleteDoc(doc(db, "blogs", id));
+          return { data: "ok" };
+        } catch (err) {
+          return { error: err };
+        }
+      },
+    }),
   }),
 });
 
-export const { useFetchBlogsQuery, useAddBlogMutation } = blogApi;
+export const { useFetchBlogsQuery, useAddBlogMutation, useDeleteBlogMutation } = blogApi;
