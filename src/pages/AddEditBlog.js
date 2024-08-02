@@ -11,6 +11,8 @@ import React, { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../firebase";
 import { toast } from "react-toastify";
+import { useAddBlogMutation } from "../services/blogsApi";
+import { useNavigate } from "react-router-dom";
 
 const initalState = {
   title: "",
@@ -21,6 +23,8 @@ const AddEditBlog = () => {
   const [data, setData] = useState(initalState);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(null);
+  const [addBlog] = useAddBlogMutation();
+  const navigate = useNavigate();
 
   const { title, description } = data;
 
@@ -61,7 +65,17 @@ const AddEditBlog = () => {
     file && updaloadFIle();
   }, [file]);
 
-  const handleChange = (e) => {};
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (title && description) {
+      await addBlog(data);
+      navigate("/");
+    }
+  };
 
   return (
     <div
@@ -77,7 +91,7 @@ const AddEditBlog = () => {
       <MDBCard alignment="center">
         <h4 className="fw-bold mt-3">Create Blog</h4>
         <MDBCardBody>
-          <MDBValidation className="row g-3" noValidate>
+          <MDBValidation className="row g-3" noValidate onSubmit={handleSubmit}>
             <MDBValidationItem
               className="col-md-12"
               feedback="Please provide title"
