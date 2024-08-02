@@ -12,6 +12,7 @@ import { db } from "../firebase";
 export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery: fakeBaseQuery(),
+  tagTypes: ["Blog"],
   endpoints: (builder) => ({
     fetchBlogs: builder.query({
       async queryFn() {
@@ -30,6 +31,7 @@ export const blogApi = createApi({
           return { error: err };
         }
       },
+      providesTags: ["Blog"],
     }),
     addBlog: builder.mutation({
       async queryFn(data) {
@@ -43,6 +45,7 @@ export const blogApi = createApi({
           return { error: err };
         }
       },
+      invalidatesTags: ["Blog"],
     }),
     deleteBlog: builder.mutation({
       async queryFn(id) {
@@ -53,8 +56,10 @@ export const blogApi = createApi({
           return { error: err };
         }
       },
+      invalidatesTags: ["Blog"],
     }),
   }),
 });
 
-export const { useFetchBlogsQuery, useAddBlogMutation, useDeleteBlogMutation } = blogApi;
+export const { useFetchBlogsQuery, useAddBlogMutation, useDeleteBlogMutation } =
+  blogApi;
