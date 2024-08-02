@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
@@ -27,6 +28,18 @@ export const blogApi = createApi({
             });
           });
           return { data: blogs };
+        } catch (err) {
+          return { error: err };
+        }
+      },
+      providesTags: ["Blog"],
+    }),
+    fetchBlog: builder.query({
+      async queryFn(id) {
+        try {
+          const docRef = doc(db, "blogs", id);
+          const snapShot = await getDoc(docRef);
+          return { data: snapShot.data() };
         } catch (err) {
           return { error: err };
         }
@@ -61,5 +74,9 @@ export const blogApi = createApi({
   }),
 });
 
-export const { useFetchBlogsQuery, useAddBlogMutation, useDeleteBlogMutation } =
-  blogApi;
+export const {
+  useFetchBlogsQuery,
+  useAddBlogMutation,
+  useDeleteBlogMutation,
+  useFetchBlogQuery,
+} = blogApi;
