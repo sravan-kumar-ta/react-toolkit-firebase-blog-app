@@ -1,12 +1,88 @@
-import React from 'react'
+import {
+  MDBBtn,
+  MDBCard,
+  MDBCardBody,
+  MDBInput,
+  MDBTextArea,
+  MDBValidation,
+  MDBValidationItem,
+} from "mdb-react-ui-kit";
+import React, { useState } from "react";
 
+const initalState = {
+  title: "",
+  description: "",
+};
 
 const AddEditBlog = () => {
-  return (
-    <div>
-      <h1>Add Edit Blog</h1>
-    </div>
-  )
-}
+  const [data, setData] = useState(initalState);
+  const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(null);
 
-export default AddEditBlog
+  const { title, description } = data;
+
+  const handleChange = (e) => {};
+
+  return (
+    <div
+      style={{
+        margin: "auto",
+        padding: "15px",
+        maxWidth: "450px",
+        alignContent: "center",
+        marginTop: "120px",
+      }}
+      className="container"
+    >
+      <MDBCard alignment="center">
+        <h4 className="fw-bold mt-3">Create Blog</h4>
+        <MDBCardBody>
+          <MDBValidation className="row g-3" noValidate>
+            <MDBValidationItem
+              className="col-md-12"
+              feedback="Please provide title"
+              invalid
+            >
+              <MDBInput
+                label="Title"
+                type="text"
+                value={title}
+                name="title"
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </MDBValidationItem>
+            <MDBValidationItem
+              className="col-md-12"
+              feedback="Please provide description"
+              invalid
+            >
+              <MDBTextArea
+                label="Description"
+                type="text"
+                rows={4}
+                value={description}
+                name="description"
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </MDBValidationItem>
+            <div className="col-md-12">
+              <MDBInput
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </div>
+            <div className="col-12">
+              <MDBBtn style={{ width: "50%" }}>Submit</MDBBtn>
+            </div>
+          </MDBValidation>
+        </MDBCardBody>
+      </MDBCard>
+    </div>
+  );
+};
+
+export default AddEditBlog;
