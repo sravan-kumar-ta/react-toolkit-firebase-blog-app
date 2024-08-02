@@ -1,5 +1,10 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export const blogApi = createApi({
@@ -7,8 +12,21 @@ export const blogApi = createApi({
   baseQuery: fakeBaseQuery(),
   endpoints: (builder) => ({
     fetchBlogs: builder.query({
-      queryFn() {
-        return { data: "ok" };
+      async queryFn() {
+        try {
+          const blogRef = collection(db, "blogs");
+          const querySnapshot = await getDocs(blogRef);
+          let blogs = [];
+          querySnapshot?.forEach((doc) => {
+            blogs.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          });
+          return { data: blogs };
+        } catch (err) {
+          return { error: err };
+        }
       },
     }),
     addBlog: builder.mutation({
