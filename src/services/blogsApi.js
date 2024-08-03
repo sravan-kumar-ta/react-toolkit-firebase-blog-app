@@ -7,6 +7,7 @@ import {
   getDoc,
   getDocs,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -71,6 +72,20 @@ export const blogApi = createApi({
       },
       invalidatesTags: ["Blog"],
     }),
+    updateBlog: builder.mutation({
+      async queryFn({ id, data }) {
+        try {
+          await updateDoc(doc(db, "blogs", id), {
+            ...data,
+            timestamp: serverTimestamp(),
+          });
+          return { data: "ok" };
+        } catch (err) {
+          return { error: err };
+        }
+      },
+      invalidatesTags: ["Blog"],
+    }),
   }),
 });
 
@@ -79,4 +94,5 @@ export const {
   useAddBlogMutation,
   useDeleteBlogMutation,
   useFetchBlogQuery,
+  useUpdateBlogMutation,
 } = blogApi;
